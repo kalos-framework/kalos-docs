@@ -1,5 +1,7 @@
 # Introduction
 
+![Kalos Framework](kalos_logo.png)
+
 **Kalos** is a simple web framework based on NodeJS.
 
 The framework has a lot of built-in features out of the box for web developers, such as:

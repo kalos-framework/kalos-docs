@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Development · GitBook</title>
+        <title>Serve static files · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,8 +57,10 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
+    <link rel="next" href="event.html" />
     
-    <link rel="prev" href="event.html" />
+    
+    <link rel="prev" href="middleware.html" />
     
 
     </head>
@@ -166,7 +168,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2.5" data-path="staticserving.html">
+        <li class="chapter active" data-level="1.2.5" data-path="staticserving.html">
             
                 <a href="staticserving.html">
             
@@ -197,7 +199,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3" data-path="development.html">
+        <li class="chapter " data-level="1.3" data-path="development.html">
             
                 <a href="development.html">
             
@@ -240,7 +242,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Development</a>
+        <a href="." >Serve static files</a>
     </h1>
 </div>
 
@@ -255,27 +257,52 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="development-guide">Development Guide</h1>
-<p>If you want to contribute to <strong>kalos</strong> framework development, please follow these steps.</p>
-<ul>
-<li>Clone project and execute <code>npm install</code>.</li>
-<li>Add new module into <code>/src</code> directory.</li>
-<li>Always write log by creating a log function. For example:</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> log = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;debug&apos;</span>)(<span class="hljs-string">&apos;kalos:router&apos;</span>);
+                                <h1 id="serve-static-files">Serve static files</h1>
+<p>By default, Kalos framework provides serve static files out of the box.</p>
+<p>It can be configured easily via one function call:</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> server = <span class="hljs-keyword">new</span> Kalos.Server();
 
-<span class="hljs-comment">// in appropriate place, write log</span>
-log(<span class="hljs-string">&apos;value of x is %d&apos;</span>, x);
+server.static({
+    source: <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;path&apos;</span>).resolve(__dirname)
+});
 </code></pre>
+<p>There is only one option to config for static serving.</p>
 <ul>
-<li>By default, log is not shown. To turn on logging, provide <code>DEBUG</code> environment key.</li>
+<li><code>source</code> : the path to the directory which is used to serve static files.</li>
 </ul>
-<pre><code>DEBUG=kalos:* babel-node index.js
-</code></pre><ul>
-<li>For simple test, add your test files into <code>test</code> directory.</li>
-<li>To execute a test file, use following command:</li>
+<p>It is always recommended to provide the absolute path to the <code>source</code> option.</p>
+<h2 id="supported-formats">Supported formats</h2>
+<ul>
+<li>By default support for the following mime types:<pre><code class="lang-js"><span class="hljs-string">&apos;.ico&apos;</span>: <span class="hljs-string">&apos;image/x-icon&apos;</span>,
+<span class="hljs-string">&apos;.html&apos;</span>: <span class="hljs-string">&apos;text/html&apos;</span>,
+<span class="hljs-string">&apos;.js&apos;</span>: <span class="hljs-string">&apos;text/javascript&apos;</span>,
+<span class="hljs-string">&apos;.json&apos;</span>: <span class="hljs-string">&apos;application/json&apos;</span>,
+<span class="hljs-string">&apos;.css&apos;</span>: <span class="hljs-string">&apos;text/css&apos;</span>,
+<span class="hljs-string">&apos;.png&apos;</span>: <span class="hljs-string">&apos;image/png&apos;</span>,
+<span class="hljs-string">&apos;.jpg&apos;</span>: <span class="hljs-string">&apos;image/jpeg&apos;</span>,
+<span class="hljs-string">&apos;.wav&apos;</span>: <span class="hljs-string">&apos;audio/wav&apos;</span>,
+<span class="hljs-string">&apos;.mp3&apos;</span>: <span class="hljs-string">&apos;audio/mpeg&apos;</span>,
+<span class="hljs-string">&apos;.svg&apos;</span>: <span class="hljs-string">&apos;image/svg+xml&apos;</span>,
+<span class="hljs-string">&apos;.pdf&apos;</span>: <span class="hljs-string">&apos;application/pdf&apos;</span>,
+<span class="hljs-string">&apos;.doc&apos;</span>: <span class="hljs-string">&apos;application/msword&apos;</span>,
+<span class="hljs-string">&apos;.eot&apos;</span>: <span class="hljs-string">&apos;appliaction/vnd.ms-fontobject&apos;</span>,
+<span class="hljs-string">&apos;.ttf&apos;</span>: <span class="hljs-string">&apos;aplication/font-sfnt&apos;</span>
+</code></pre>
+</li>
 </ul>
-<pre><code class="lang-js">babel-node test/your_test_file.js
+<h2 id="example-create-a-static-file-hosting">Example: Create a static file hosting</h2>
+<p>With this in mind, you can create a server to serve static files of your need.</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> server = <span class="hljs-keyword">new</span> Kalos.Server();
+
+server.static({
+    source: <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;path&apos;</span>).resolve(__dirname)
+});
+
+server.configRouter(<span class="hljs-keyword">new</span> Kalos.Router());
+
+server.start((ip, port) =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&apos;server started at &apos;</span> + ip + <span class="hljs-string">&apos;:&apos;</span> + port);
+});
 </code></pre>
 
                                 
@@ -304,10 +331,14 @@ log(<span class="hljs-string">&apos;value of x is %d&apos;</span>, x);
 
             
                 
-                <a href="event.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Event">
+                <a href="middleware.html" class="navigation navigation-prev " aria-label="Previous page: Middleware">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
+                
+                <a href="event.html" class="navigation navigation-next " aria-label="Next page: Event">
+                    <i class="fa fa-angle-right"></i>
+                </a>
                 
             
         
@@ -316,7 +347,7 @@ log(<span class="hljs-string">&apos;value of x is %d&apos;</span>, x);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Development","level":"1.3","depth":1,"previous":{"title":"Event","level":"1.2.6","depth":2,"path":"event.md","ref":"event.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"development.md","mtime":"2019-08-07T15:46:21.359Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-08T05:10:10.689Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Serve static files","level":"1.2.5","depth":2,"next":{"title":"Event","level":"1.2.6","depth":2,"path":"event.md","ref":"event.md","articles":[]},"previous":{"title":"Middleware","level":"1.2.4","depth":2,"path":"middleware.md","ref":"middleware.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"staticserving.md","mtime":"2019-08-08T03:58:32.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-08T05:10:10.689Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
